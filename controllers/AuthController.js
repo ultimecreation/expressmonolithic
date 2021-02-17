@@ -11,26 +11,35 @@ module.exports = {
             // no errors found, check if email exists in db
             if (errors.length == 0) {
                 AuthModel.getUserByEmail(user.email,(error,results)=>{
-                    // email is not in db, save user and redirect to home
+                    
                     if(results[0].total == 0) {
+
+                        // email is not in db, save user and redirect to home
                         AuthModel.saveUser(user,(error,results)=>{
                             if(error) return error
                             if(results.length > 0) console.log(results)
                         })
                         return res.redirect('/')
-                    } else{ 
+
+                    } else { 
+
                         // email is found in db, render register and error
                         errors.push({ msg: "L'email est déjà pris" })
                         return res.render('auth/register', { errors:errors})
+
                     }
                 })
-            } else{
+            } else {
+
                 // there are some errors, return them to the front
                 return res.render('auth/register', { errors: errors })
+
             }
         } else {
+
             // request is not POST,display the form
             return res.render('auth/register')
+
         }
         
 
@@ -54,6 +63,7 @@ module.exports = {
          
     },
     validateLoginInput:(user)=>{
+        let errors = []
         if (user.password == '') {
             errors.push({ msg: "Le mot de passe est requis" })
         }
@@ -63,11 +73,13 @@ module.exports = {
         else if (module.exports.validateEmail(user.email) == false) {
             errors.push({ msg: "L'email n'est pas valid" })
         }
+        return errors
     },
     validateRegisterInput:(user)=>{
         let errors = []
 
-        module.exports.validateLoginInput(user)
+        errors = module.exports.validateLoginInput(user)
+        
         if (user.username == ''){
             errors.push({ msg: "Le nom est requis" })
         }

@@ -12,10 +12,10 @@ module.exports = {
         })
     },
     getUserByEmail:  (email,callback)=>{
-        db.query(`SELECT COUNT(*) AS total FROM users WHERE email=?`,
+          db.query(`SELECT COUNT(*) AS total FROM users WHERE email=?`,
         [email],
         (error,results)=>{
-            if(error) return callback(error)
+            if(error) return callback(errors,error)
             if(results) return callback(null,results)
         })
     }
