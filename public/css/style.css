@@ -1,0 +1,22 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.container{
+    max-width: 960px;
+    margin: 0 auto;
+}
+nav{
+    background: pink;
+}
+nav ul{
+    display: flex;
+    list-style: none;
+}
+nav ul li{
+    padding: 0.5em 1rem;
+}
+nav ul li a{
+    text-decoration: none;
+}
