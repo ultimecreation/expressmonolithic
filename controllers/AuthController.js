@@ -1,7 +1,7 @@
 
 const AuthModel = require('../models/AuthModel')
 module.exports = {
-    register:  (req, res) => {
+    register:  (req, res, next) => {
         if (req.method === 'POST') {
 
             // bind incoming data and check for error 
@@ -71,7 +71,7 @@ module.exports = {
             errors.push({ msg: "L'email est requis" })
         }
         else if (module.exports.validateEmail(user.email) == false) {
-            errors.push({ msg: "L'email n'est pas valid" })
+            errors.push({ msg: "L'email n'est pas valide" })
         }
         return errors
     },
@@ -90,7 +90,6 @@ module.exports = {
             errors.push({ msg: "Les mot de passe ne correspondent pas" })
         }
         
-
         return errors
     },
     validateEmail: (email) => {
