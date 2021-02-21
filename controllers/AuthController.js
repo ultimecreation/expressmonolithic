@@ -1,4 +1,5 @@
 
+const { validationResult } = require('express-validator')
 const AuthModel = require('../models/AuthModel')
 module.exports = {
     register:  (req, res, next) => {
@@ -44,6 +45,26 @@ module.exports = {
         
 
 
+    },
+    register2: (req,res)=>{
+        if(req.method === 'POST'){
+             // bind incoming data and check for error 
+            
+             let errors = validationResult(req).array()
+             if(errors.length > 0){
+                res.render("auth/register2",{errors:errors})
+             } else{
+                const user = module.exports.bindUser(req,'register')
+                // email is not in db, save user and redirect to home
+                AuthModel.saveUser(user,(error,results)=>{
+                    if(error) return error
+                    if(results.length > 0) console.log(results)
+                })
+                return res.redirect('/')
+             }
+             
+        } 
+        else  return res.render('auth/register2')
     },
     login: (req, res) => {
         res.render('auth/login')

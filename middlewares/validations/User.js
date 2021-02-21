@@ -3,6 +3,10 @@ const db = require('../../config/database');
 
 const AuthModel = require('../../models/AuthModel')
 exports.validateRegisterForm = [
+  check('username')
+    .not()
+    .isEmpty()
+    .withMessage("Le nom est requis"),
   check('email')
     .not()
     .isEmpty()
@@ -12,19 +16,29 @@ exports.validateRegisterForm = [
     .withMessage("L'email n'est pas valide")
     .bail()
     .custom(email=>{
-      new Promise((resolve, reject) => {
-        db.query('SELECT COUNT(*) AS total FROM users WHERE email = ?', [email], function (error, results, fields) {
-            if(!error){
-                console.log("EMAIL COUNT : "+results[0].total);
-                return results[0].total ==0 ? false :true
-            } else {
-                return reject(new Error('Database error!!'));
-            }
-          }
-        );
-    });
+      return new Promise((resolve, reject) => {
+        db.query('SELECT id FROM users WHERE email=?', [email],  function (err, results, fields) {
+           if (err) reject(err)
+           if (results.length == 0) resolve(true)
+            reject(new Error("L'email est dèjà pris"))
+        })
+     })
     })
+    .normalizeEmail()
     .withMessage("L'email est déjà prit")
     .bail(),
-  check('password',"Le mot de passe est requis").notEmpty()
+  check('password')
+    .not()
+    .isEmpty()
+    .withMessage("Le mot de passe est requis")
+    .bail()
+    .custom( (password,{req}) =>{
+      if(password != req.body.password_confirm){
+        throw new Error("Les mots de passe ne correspondent pas")
+      }
+      return true
+    })
+    .bail(),
+  check('password_confirm',"La confirmation du mot de passe est requise").notEmpty(),
+  
 ];
