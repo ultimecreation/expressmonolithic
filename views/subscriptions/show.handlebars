@@ -1,0 +1,60 @@
+<h2>Notre offre</h2>
+<form action="" method="POST">
+  <label for="email">Email</label><br>
+  <input type="email" name="email" id="email"><br><br>
+
+  <label for="make">Marque</label><br>
+  <input type="text" name="make" id="make" value="renault"><br><br>
+
+  <label for="model">Modele</label><br>
+  <input type="text" name="model" id="model" value="clio"><br><br>
+
+  <label for="make">Plan 1</label><br>
+  <input type="text" name="plan" id="plan" value="price_1IHueAFE7L6PooyOgk22MZaE"><br><br>
+  <label for="card-element">Card</label>
+  <div id="card-element"></div>
+  <div id="card-errors"></div>
+  <div id="error-message" class="error-message"></div>
+  <button id="basic-plan-btn" disabled>Select</button>
+</form>
+
+<div id="debug"></div>
+<script>
+  const stripe = Stripe('pk_test_51IFNI3FE7L6PooyOiPVKeWQzCnVu7wrOIOaPJW1axvBiGu0KmMFMDRn0vk2kDVRwCRymHSRnAaFDn1eFrdzbyfJN00Qd2RKIDl');
+  const elements = stripe.elements();
+  const cardElement = elements.create('card');
+  cardElement.mount('#card-element');
+
+  cardElement.on('change', (event) => {
+    if (event.complete) {
+      // enable payment button
+      document.querySelector('#basic-plan-btn').disabled = false
+    } else if (event.error) {
+      // show validation to customer
+    }
+  });
+
+  const form = document.querySelector('form');
+const errorEl = document.querySelector('#card-errors');
+
+// Give our token to our form
+const stripeTokenHandler = token => {
+  const hiddenInput = document.createElement('input');
+  hiddenInput.setAttribute('type', 'hidden');
+  hiddenInput.setAttribute('name', 'stripeToken');
+  hiddenInput.setAttribute('value', token.id);
+  form.appendChild(hiddenInput);
+console.log(token)
+  form.submit();
+}
+
+// Create token from card data
+form.addEventListener('submit', e => {
+  e.preventDefault();
+
+  stripe.createToken(cardElement).then(res => {
+    if (res.error) errorEl.textContent = res.error.message;
+    else stripeTokenHandler(res.token);
+  })
+})
+</script>

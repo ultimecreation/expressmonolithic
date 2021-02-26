@@ -1,14 +1,11 @@
 const router = require('express').Router()
 const AuthController = require('../controllers/AuthController')
 const HomeController = require('../controllers/HomeController')
-const PagesController = require('../controllers/PagesController')
+const SubscriptionsController = require('../controllers/SubscriptionsController')
 const User = require('../middlewares/validations/User')
 
 // route that handles get method
 router.get('/',HomeController.index)
-router.get('/about',PagesController.about)
-router.get('/services',PagesController.services)
-
 // route that handles multiple http verbs/methods
 router.route('/inscription2')
             .get(AuthController.register2) 
@@ -20,5 +17,7 @@ router.route('/inscription')
 router.route('/connexion')
             .get(AuthController.login)
             .post(AuthController.login)
-
+router.route('/souscription')
+            .get(SubscriptionsController.show)
+            .post(SubscriptionsController.show)
 module.exports = router
